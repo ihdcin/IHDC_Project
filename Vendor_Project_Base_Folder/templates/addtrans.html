@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Add Transaction Page{% endblock %}
+
+
+{% block slider %}
+
+<style>
+
+select{
+    text-align:center;
+    margin-right:25px;
+    width:336px;
+    height:46px;
+    border-radius:15px;
+    margin-bottom:9px;
+    border"1px solid black;
+}
+  input{
+  width:350px;
+  height:50px;
+  padding:20px;
+  margin:10px;
+  border-radius:20px;
+  }
+
+input[type=date]{
+    margin-left:90px;
+}
+
+input[type=text]{
+  margin-left:50px;
+}
+
+inut[type=number]{
+    margin-left:45px;
+}
+
+#cp{
+  width:286px;
+}
+
+
+
+#ifs{
+  margin-left:65px;
+}
+
+.glow-button {
+    padding: 10px 20px;
+    font-size: 20px;
+    color: #fff;
+    background-color: #00bbf0;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    outline: none;
+    transition: box-shadow 0.3s ease;
+}
+p{
+    color:white;
+}
+
+.glow-button:hover {
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.6), 0 0 30px rgba(0, 255, 255, 0.4), 0 0 40px rgba(0, 255, 255, 0.2);
+}
+button{
+    margin-left:250px;
+    width:160px;
+    border-radius:10px;
+}
+
+
+
+</style>
+
+
+  <section class="team_section layout_padding">
+    <div class="container-fluid">
+      <div class="heading_container heading_center" style="padding:10px;">
+        <h2 class="" style="margin-bottom:20px;">
+          Vendor <span> Transaction</span>
+        </h2>
+      </div>
+
+      <div class="team_container" style="height:500px;">
+       <form action="{%  url 'addtransacction' %}" method="post">
+           {% csrf_token %}
+           <label style="margin-right:30px;">Choose Vendor</label>
+           <select name="ven" required>
+             <option selected disabled>Choose vendor</option>
+             {% for i in vens %}
+             <option value="{{i.id}}">{{i}}</option>
+             {% endfor %}
+           </select><br>
+           <label>Description</label>
+           <input type="text" placeholder="Description" name="desc" required><br>
+           <label>Amount</label>
+           <input type="number"  id="ifs" placeholder="Amount" name="amt" required><br>
+           <label>Date</label>
+           <input type="date" name="date" required><br>
+           <button class="glow-button" type="submit">Add</button>
+
+       </form>
+      </div>
+    </div>
+  </section>
+
+{% endblock %}
+
+

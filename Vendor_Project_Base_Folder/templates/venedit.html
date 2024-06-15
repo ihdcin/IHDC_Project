@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Vendor Edit Page{% endblock %}
+
+{% block slider %}
+
+<style>
+  input {
+    width: 350px;
+    height: 50px;
+    padding: 20px;
+    margin: 10px;
+    border-radius: 20px;
+  }
+
+  input[type=text] {
+    margin-left: 40px;
+  }
+
+  input[type=number] {
+    margin-left: 40px;
+  }
+
+  #ifs {
+    margin-left: 40px;
+  }
+
+  .glow-button {
+    padding: 10px 20px;
+    font-size: 20px;
+    color: #fff;
+    background-color: #00bbf0;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    outline: none;
+    transition: box-shadow 0.3s ease;
+  }
+
+  p {
+    color: white;
+  }
+
+  .glow-button:hover {
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.6), 0 0 30px rgba(0, 255, 255, 0.4), 0 0 40px rgba(0, 255, 255, 0.2);
+  }
+
+  button {
+    margin-left: 250px;
+    width: 160px;
+    border-radius: 10px;
+  }
+
+</style>
+
+<section class="team_section layout_padding">
+  <div class="container-fluid">
+    <div class="heading_container heading_center" style="padding:10px;">
+      <h2 class="" style="margin-bottom:20px;">
+        Vendor <span> Details</span>
+      </h2>
+    </div>
+
+    <div class="team_container" style="height:500px;">
+      <form id="editVendorForm" method="post">
+        {% csrf_token %}
+        <label>Vendor Name</label>
+        <input type="text" placeholder="Vendor name" value="{{ v.vendor_name }}" name="vn" autofocus required><br>
+        <label>Account Number</label>
+        <input type="number" placeholder="Account number" value="{{ v.account_number }}" name="acn" required><br>
+        <label>IFSC Code</label>
+        <input type="text" id="ifs" placeholder="IFSC code" value="{{ v.ifsc_code }}" name="ifsc" required><br>
+        <button class="glow-button" type="submit">Update</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<script>
+  document.getElementById('editVendorForm').addEventListener('submit', function(event) {
+    event.preventDefault(); // Prevent default form submission
+    let formData = new FormData(this); // Create FormData object to send form data
+
+    fetch(`http://127.0.0.1:8000/edit_vendor/{{ v.id }}/`, {
+        method: 'POST',
+        headers: {
+          'X-CSRFToken': '{{ csrf_token }}',
+        },
+        body: formData, // Set form data as the request body
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.status === 'success') {
+        alert(data.message);
+        // Optionally redirect or update UI after successful update
+        window.location.href = '{% url "editven" v.id %}'; // Redirect to vendor list page
+      } else {
+        alert('Failed to update vendor: ' + data.message);
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      alert('An error occurred while updating the vendor.');
+    });
+  });
+</script>
+
+{% endblock %}

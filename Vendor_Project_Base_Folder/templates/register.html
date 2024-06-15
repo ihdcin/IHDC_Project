@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Register Page{% endblock %}
+
+
+{% block slider %}
+
+<style>
+  input{
+  width:350px;
+  height:50px;
+  padding:20px;
+  margin:10px;
+  border-radius:20px;
+  }
+
+input[type=text]{
+  margin-left:38px;
+}
+input[type=email]{
+  margin-left:43px;
+}
+input[type=password]{
+  margin-left:12px;
+}
+
+#cp{
+  width:286px;
+}
+
+#rg{
+  margin-left:280px;
+}
+
+.glow-button {
+    padding: 10px 20px;
+    font-size: 20px;
+    color: #fff;
+    background-color: #00bbf0;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    outline: none;
+    transition: box-shadow 0.3s ease;
+}
+p{
+    color:white;
+}
+
+.glow-button:hover {
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.6), 0 0 30px rgba(0, 255, 255, 0.4), 0 0 40px rgba(0, 255, 255, 0.2);
+}
+button{
+    margin-left:281px;
+    width:160px;
+    border-radius:10px;
+}
+</style>
+
+
+  <section class="about_section layout_padding">
+    <div class="container  ">
+      <div class="heading_container heading_center">
+        <h2>
+          Register <span>Here</span>
+        </h2>
+        <p>
+          Magni quod blanditiis non minus sed aut voluptatum illum quisquam aspernatur ullam vel beatae rerum ipsum voluptatibus
+        </p>
+      </div>
+      <div class="row">
+        <div class="col-md-6 ">
+          <div class="img-box">
+            <img src="{% static 'images/about-img.png' %}" alt="">
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="detail-box">
+            <h3>
+              User Register Form
+            </h3>
+            <p>
+             <form action="#" method="post">
+              {% csrf_token %}
+              <label>Name</label>
+              <input type="text" placeholder="first name" name="nm" autofocus required><br>
+              <label>Email</label>
+              <input type="email" placeholder="email" name="em" required><br>
+              <label>Password</label>
+              <input type="password" placeholder="password" maxlength="8" name="pw" title="maximum length must be 8 characters" required><br>
+              <label>Confirm Password</label>
+              <input type="password" placeholder="confirm password" maxlength="8" title="Maximum length must be 8 characters"  id="cp" name="cp" required>
+            <button type="submit" class="glow-button" style="padding:15px;">Register</button>
+          </form>
+            </p>
+            <p>
+                Already Registered <a href="{% url 'login' %}">click here for login</a>
+            </p>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+{% endblock %}
+
+

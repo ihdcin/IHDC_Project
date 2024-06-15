@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+
+{% block title %}Login Page{% endblock %}
+
+
+{% block slider %}
+
+<style>
+
+.glow-button {
+    padding: 10px 20px;
+    font-size: 20px;
+    color: #fff;
+    background-color: #00bbf0;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    outline: none;
+    transition: box-shadow 0.3s ease;
+}
+
+.glow-button:hover {
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.6), 0 0 30px rgba(0, 255, 255, 0.4), 0 0 40px rgba(0, 255, 255, 0.2);
+}
+
+  input{
+  width:320px;
+  height:50px;
+  padding:20px;
+  margin:10px;
+  border-radius:20px;
+  }
+
+input[type=email]{
+  margin-left:48px;
+}
+input[type=password]{
+  margin-left:13px;
+}
+label{
+    font-size:18px;
+}
+button{
+    color:#ffff;
+    font-family: "Open Sans", sans-serif;
+    padding:10px;
+    width:90px;
+    background-color:#00bbf0;
+    border-radius:10px;
+    margin-left:50px;
+    border:2px solid black;
+}
+#ca{
+    color:white;
+    padding:30px;
+    margin-left:50px;
+    font-family: "Open Sans", sans-serif;
+}
+
+</style>
+
+<div>
+    <div style="margin-top:80px;">
+    <h1 style="text-align:center;color:white;font-family:sans-serif;">Login Page</h1>
+    <center>
+    <form action="" method="post" >
+        {% csrf_token %}
+        <label style="color:white;">Email</label>
+        <input type="email" placeholder="email" name="em" required autofocus><br>
+        <label style="color:white;">Password</label>
+        <input type="password" placeholder="password"  name="pw" required><br>
+        <button type="submit" class="glow-button">login</button>
+
+    </form>
+        <p id="ca">Create an account <a href="{% url 'reg' %}">here</a></p>
+    </center>
+    </div>
+</div>
+
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+

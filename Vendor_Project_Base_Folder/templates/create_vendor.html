@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Add Vendor Page{% endblock %}
+
+{% block slider %}
+
+<style>
+  input {
+    width: 350px;
+    height: 50px;
+    padding: 20px;
+    margin: 10px;
+    border-radius: 20px;
+  }
+
+  input[type=text] {
+    margin-left: 40px;
+  }
+
+  input[type=email] {
+    margin-left: 43px;
+  }
+
+  input[type=password] {
+    margin-left: 12px;
+  }
+
+  #cp {
+    width: 286px;
+  }
+
+  #ifs {
+    margin-left: 65px;
+  }
+
+  .glow-button {
+    padding: 10px 20px;
+    font-size: 20px;
+    color: #fff;
+    background-color: #00bbf0;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    outline: none;
+    transition: box-shadow 0.3s ease;
+  }
+
+  p {
+    color: white;
+  }
+
+  .glow-button:hover {
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.6), 0 0 30px rgba(0, 255, 255, 0.4), 0 0 40px rgba(0, 255, 255, 0.2);
+  }
+
+  button {
+    margin-left: 250px;
+    width: 160px;
+    border-radius: 10px;
+  }
+</style>
+
+<section class="team_section layout_padding">
+  <div class="container-fluid">
+    <div class="heading_container heading_center" style="padding:10px;">
+      <h2 class="" style="margin-bottom:20px;">
+        Vendor <span> Register</span>
+      </h2>
+    </div>
+
+    <div class="team_container" style="height:500px;">
+      <form id="vendor-form">
+        {% csrf_token %}
+        <label>Vendor Name</label>
+        <input type="text" placeholder="vendor name" name="vn" autofocus required><br>
+        <label>Account Number</label>
+        <input type="number" placeholder="account number" name="acn" required><br>
+        <label>IFSC Code</label>
+        <input type="text" id="ifs" placeholder="IFSC code" name="ifsc" required><br>
+        <button class="glow-button" type="submit">Add</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<script>
+  document.getElementById('vendor-form').addEventListener('submit', function(event) {
+    event.preventDefault(); // Prevent the default form submission
+
+    const formData = new FormData(this);
+
+    fetch('{% url "add_vendor" %}', {
+      method: 'POST',
+      body: formData,
+      headers: {
+        'X-CSRFToken': '{{ csrf_token }}',
+      },
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.status === 'success') {
+        alert(data.message);
+        // Optionally, reset the form or redirect the user
+        document.getElementById('vendor-form').reset();
+      } else {
+        alert('Failed to add vendor: ' + data.message);
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+  });
+</script>
+
+{% endblock %}

@@ -1,0 +1,255 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Vendor Page{% endblock %}
+
+{% block slider %}
+
+<style>
+  input {
+    width: 350px;
+    height: 50px;
+    padding: 20px;
+    margin: 10px;
+    border-radius: 20px;
+  }
+
+  input[type=text] {
+    margin-left: 40px;
+  }
+
+  input[type=email] {
+    margin-left: 43px;
+  }
+
+  input[type=password] {
+    margin-left: 12px;
+  }
+
+  #cp {
+    width: 286px;
+  }
+
+  #ifs {
+    margin-left: 65px;
+  }
+
+  .glow-button {
+    padding: 10px 20px;
+    font-size: 20px;
+    color: #fff;
+    background-color: #00bbf0;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    outline: none;
+    transition: box-shadow 0.3s ease;
+  }
+
+  p {
+    color: white;
+  }
+
+  .glow-button:hover {
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.6), 0 0 30px rgba(0, 255, 255, 0.4), 0 0 40px rgba(0, 255, 255, 0.2);
+  }
+
+  button {
+    margin-left: 250px;
+    width: 160px;
+    border-radius: 10px;
+  }
+
+  th {
+    text-align: center;
+  }
+
+  .styled-table {
+    border-collapse: collapse;
+    margin: 25px 0;
+    font-size: 18px;
+    text-align: center;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+  }
+
+  .styled-table thead tr {
+    background-color: #009879;
+    color: #ffffff;
+    text-align: left;
+  }
+
+  .styled-table th,
+  .styled-table td {
+    padding: 12px 15px;
+  }
+
+  .styled-table tbody tr {
+    border-bottom: 1px solid #dddddd;
+    transition: background-color 0.3s ease;
+  }
+
+  .styled-table tbody tr:hover {
+    background-color: #017f7f;
+  }
+
+  .styled-table tbody tr:nth-of-type(even) {
+    background-color: #f3f3f3;
+    color: #000;
+  }
+
+  .styled-table tbody tr:nth-of-type(odd) {
+    background-color: #e3e3e3;
+    color: #000;
+  }
+
+  .styled-table tbody tr.active-row {
+    font-weight: bold;
+    color: #009879;
+  }
+
+  .edit-button,
+  .delete-button {
+    padding: 5px 10px;
+    margin: 0 5px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s, box-shadow 0.3s;
+  }
+
+  .edit-button {
+    background-color: #1e90ff;
+    color: #fff;
+  }
+
+  .delete-button {
+    background-color: #ff4c4c;
+    color: #fff;
+  }
+
+  .edit-button:hover {
+    background-color: #0064ff;
+    box-shadow: 0 0 10px rgba(30, 144, 255, 0.8);
+  }
+
+  .delete-button:hover {
+    background-color: #ff1c1c;
+    box-shadow: 0 0 10px rgba(255, 76, 76, 0.8);
+  }
+</style>
+
+<section class="team_section layout_padding">
+  <div class="container-fluid">
+    <div class="heading_container heading_center" style="padding:10px;">
+      <h2 class="" style="margin-bottom:20px;">
+        Vendor <span> Register</span>
+      </h2>
+    </div>
+
+    <div class="team_container" style="height:500px;">
+      <center>
+        <table class="styled-table">
+          <thead>
+            <tr>
+              <th>SI No.</th>
+              <th>Name</th>
+              <th>Account Number</th>
+              <th>IFSC Code</th>
+              <th>Report</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for i in vend %}
+            <tr id="vendor-{{i.id}}">
+              <td>{{ forloop.counter }}</td>
+              <td>{{ i.vendor_name }}</td>
+              <td>{{ i.account_number }}</td>
+              <td>{{ i.ifsc_code }}</td>
+              <td> <button onclick="downloadTransactions({{ i.id }})">Download Transactions</button></td>
+              <td>
+                <a href="{% url 'editven' i.id %}"><button class="edit-button">Edit</button></a>
+                <button class="delete-button" onclick="deleteVendor({{ i.id }})">Delete</button>
+              </td>
+
+            </tr>
+            {% endfor %}
+            <!-- Add more rows as needed -->
+          </tbody>
+        </table>
+      </center>
+    </div>
+  </div>
+</section>
+
+<script>
+  function deleteVendor(vendorId) {
+    if (confirm('Are you sure you want to delete this vendor?')) {
+      fetch(`http://127.0.0.1:8000/delete_vendor/${vendorId}/`, {
+        method: 'DELETE',
+        headers: {
+          'X-CSRFToken': '{{ csrf_token }}',
+        },
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.status === 'success') {
+          alert(data.message);
+          document.getElementById(`vendor-${vendorId}`).remove();
+        } else {
+          alert('Failed to delete vendor: ' + data.message);
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred while deleting the vendor.');
+      });
+    }
+  }
+
+
+</script>
+
+  <script>
+    function downloadTransactions(vendorId) {
+      fetch(`http://127.0.0.1:8000/transactions/?vendor_id=${vendorId}`)
+        .then(response => response.json())
+        .then(data => {
+          if (data && data.transactions && data.transactions.length > 0) {
+            const workbook = createExcelWorkbook(data.transactions);
+            saveWorkbook(workbook, `vendor_${vendorId}_transactions.xlsx`);
+          } else {
+            alert('No transactions available for download.');
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert('Failed to fetch data from the server.');
+        });
+    }
+
+    function createExcelWorkbook(transactions) {
+      const workbook = XLSX.utils.book_new();
+
+      // Convert transactions to Excel sheet
+      const sheet = XLSX.utils.json_to_sheet(transactions);
+      XLSX.utils.book_append_sheet(workbook, sheet, 'Transactions');
+
+      return workbook;
+    }
+
+    function saveWorkbook(workbook, filename) {
+      // Generate Excel file
+      const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+
+      // Create Blob from Excel buffer
+      const blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
+
+      // Create download link
+      const downloadLink = document.createElement('a');
+      downloadLink.href = window.URL.createObjectURL(blob);
+      downloadLink.download = filename;
+      downloadLink.click();
+    }
+  </script>
+
+{% endblock %}
